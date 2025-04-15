@@ -1,0 +1,89 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        ### 1. Публичные маршруты (без JWT валидации) ###
+        
+        # 1.1 Security Service (авторизация)
+        - id: profile-public
+          uri: lb://profile
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - StripPrefix=1
+
+        # 1.2 Report Service (публичные GET-методы)
+        - id: report-public
+          uri: lb://report
+          predicates:
+            - Method=GET
+            - Path=/api/reports/by_arrivalto/{arrival_to},/api/reports/{id}
+          filters:
+            - StripPrefix=1
+        
+        # 1.3 Profile Service
+        - id: profile-secured
+          uri: lb://profile
+          predicates:
+            - Path=/api/profiles/**
+          filters:
+            - StripPrefix=1
+
+        ### 2. Приватные маршруты (требуют JWT валидации) ###
+        
+        # 2.1 Report Service (защищённые методы)
+        - id: report-secured
+          uri: lb://report
+          predicates:
+            - Path=/api/reports/**
+          filters:
+            - StripPrefix=1
+            - JwtValidationFilterFactory
+
+        # 2.2 Trip Service
+        - id: trip
+          uri: lb://trip
+          predicates:
+            - Path=/api/trips/**
+          filters:
+            - StripPrefix=1
+            - JwtValidationFilterFactory
+
+        # 2.3 Kanban Service
+        - id: kanban
+          uri: lb://kanban
+          predicates:
+            - Path=/api/kanban/**,/api/tasks/**
+          filters:
+            - StripPrefix=1
+            - JwtValidationFilterFactory
+
+        # 2.4 Media Service
+        - id: media
+          uri: lb://media
+          predicates:
+            - Path=/api/media/**
+          filters:
+            - StripPrefix=1
+            - JwtValidationFilterFactory
+
+        # 2.5 Notification Service
+        - id: notification
+          uri: lb://notification
+          predicates:
+            - Path=/api/notifications/**
+          filters:
+            - StripPrefix=1
+            - JwtValidationFilterFactory
+
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin
