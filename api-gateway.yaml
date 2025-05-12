@@ -37,6 +37,22 @@ spring:
             - Path=/api/profiles/**
           filters:
             - StripPrefix=1
+        
+        # 1.4 Trip Service
+        - id: trip-accept-secured
+          uri: lb://profile
+          predicates:
+            - Path=/api/trips/participations/accept/{id}
+          filters:
+            - StripPrefix=1
+        
+        # 1.4 Trip Service
+        - id: trip-decline-secured
+          uri: lb://profile
+          predicates:
+            - Path=/api/trips/participations/decline/{id}
+          filters:
+            - StripPrefix=1
 
         ### 2. Приватные маршруты (требуют JWT валидации) ###
         
