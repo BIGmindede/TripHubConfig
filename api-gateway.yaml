@@ -38,6 +38,14 @@ spring:
           filters:
             - StripPrefix=1
         
+        # 1.4 Media Service
+        - id: media
+          uri: lb://media
+          predicates:
+            - Path=/api/media/**
+          filters:
+            - StripPrefix=1
+        
         # # 1.4 Trip Service
         # - id: trip-accept-secured
         #   uri: lb://trip
@@ -83,16 +91,7 @@ spring:
             - StripPrefix=1
             - JwtValidationFilterFactory
 
-        # 2.4 Media Service
-        - id: media
-          uri: lb://media
-          predicates:
-            - Path=/api/media/**
-          filters:
-            - StripPrefix=1
-            - JwtValidationFilterFactory
-
-        # 2.5 Notification Service
+        # 2.4 Notification Service
         - id: notification
           uri: lb://notification
           predicates:
