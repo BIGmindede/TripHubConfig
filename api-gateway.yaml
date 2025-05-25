@@ -45,6 +45,14 @@ spring:
             - Path=/api/media/**
           filters:
             - StripPrefix=1
+
+        # 1.5 Trip Service
+        - id: trip
+          uri: lb://trip
+          predicates:
+            - Path=/api/trips/{id}
+          filters:
+            - StripPrefix=1
         
         # # 1.4 Trip Service
         # - id: trip-accept-secured
