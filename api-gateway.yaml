@@ -26,7 +26,7 @@ spring:
           uri: lb://report
           predicates:
             - Method=GET
-            - Path=/api/reports/by_arrivalto/{arrival_to},/api/reports/{id},/api/reports
+            - Path=/api/reports/by_arrivalto/{arrival_to},/api/reports/{id},/api/reports,/api/reports/by_trip/{tripId}
           filters:
             - StripPrefix=1
         
